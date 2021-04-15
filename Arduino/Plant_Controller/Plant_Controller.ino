@@ -14,8 +14,8 @@ DHT dht(DHTPIN, DHTTYPE);
 
 ESP8266WebServer server(80);
 
-const char* ssid = "ponyfarm_IoT";
-const char* password = "mustangsallys";
+const char* ssid = "";
+const char* password = "";
 
 void start_water_plant(){
   //String water_status = "{\"Watering_Status\": RUNNING }";
