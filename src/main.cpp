@@ -9,7 +9,7 @@ void setup() {
 }
 
 void loop() {
-  Serial.print("test");
+  Serial.println("test");
 }
 
 // put function definitions here:
