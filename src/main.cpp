@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
 
 // put function declarations here:
 int myFunction(int, int);
