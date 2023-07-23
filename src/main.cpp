@@ -1,19 +1,26 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <secrets.h>
 
-// put function declarations here:
-int myFunction(int, int);
+const char* ssid = SECRET_SSID;
+const char* pass = SECRET_PASS;
 
 void setup() {
+
   Serial.begin(9600);
-  Serial.print("test");
+
+  WiFi.begin(ssid,pass);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println();
+
+  Serial.println("Connected, IP Address: ");
+  Serial.println(WiFi.localIP());
+
 }
 
-void loop() {
-  Serial.println("test");
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
+void loop() {}
