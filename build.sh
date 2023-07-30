@@ -4,4 +4,8 @@
 
 . ~/.platformio/penv/bin/activate
 
+# Make sure we have all the libraries needed
+pio lib install
+
+# Build and install
 pio run -e esp12e -t upload
