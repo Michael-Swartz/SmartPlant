@@ -1,0 +1,13 @@
+name: build
+on: push
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.9
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install PlatformIO
+        run: pip install -U platformio
+      - name: Test build
+        run: pio run -e esp12e
