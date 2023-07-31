@@ -1,8 +1,12 @@
-name: hello-world
+name: build
 on: push
 jobs:
   my-job:
     runs-on: ubuntu-latest
+    container:
+      image: python:3.9
     steps:
-      - name: my-step
-        run: echo "Hello World!"
+      - name: Install PlatformIO
+        run: pip install -U platformio
+      - name: Test build
+        run: pio run -e esp12e
