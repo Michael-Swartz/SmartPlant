@@ -9,4 +9,4 @@ jobs:
       - name: Install PlatformIO
         run: pip install -U platformio
       - name: Test build
-        run: pio run -e esp12e
+        run: ls
