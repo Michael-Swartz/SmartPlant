@@ -10,6 +10,6 @@ jobs:
       - name: Install PlatformIO
         run: pip install -U platformio
       - name: Create Dummy secrets.h file
-        run: touch include/secrets.h && echo "#define SECRET_SSID "testSSID"" >> include/secrets.h && echo "#define SECRET_PASS "fakepass"" >> include/secrets.h
+        run: touch include/secrets.h && echo '#define SECRET_SSID "testSSID"' >> include/secrets.h && echo '#define SECRET_PASS "fakepass"' >> include/secrets.h
       - name: Test build
         run: pio run -e esp12e
