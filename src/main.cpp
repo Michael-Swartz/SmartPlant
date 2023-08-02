@@ -11,9 +11,15 @@ PubSubClient client(espClient);
 const char* mqtt_broker = "10.0.0.157";
 const char* humTopic = "/office/humidity";
 const char* tempTopic = "/office/temperature";
+const char* voltageTopic = "/office/voltage";
 const int mqtt_port = 1883;
 const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
+const float max_voltage = 4.01; // Calibrated number
+const float max_adc_value = 1023.00;
+
+const int analogInPin = A0;
+float voltage = 0;
 
 #define DHTPIN 12
 #define DHTTYPE DHT22
@@ -21,6 +27,7 @@ const char* pass = SECRET_PASS;
 #define MSG_BUFFER_SIZE	(50)
 char temp_msg[MSG_BUFFER_SIZE];
 char hum_msg[MSG_BUFFER_SIZE];
+char volt_msg[MSG_BUFFER_SIZE];
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -73,31 +80,50 @@ void loop() {
     reconnect();
   }
 
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f_temp = dht.readTemperature(true);
-  Serial.print("Temperature: ");
-  snprintf(temp_msg, MSG_BUFFER_SIZE, "%f", f_temp);
-  Serial.println(temp_msg);
-
-  if (client.publish(tempTopic, temp_msg)) {
+  voltage = ((float(analogRead(analogInPin)) / max_adc_value) * max_voltage);
+  Serial.print("Voltage: ");
+  Serial.println(voltage);
+  Serial.println(analogRead(analogInPin));
+  snprintf(volt_msg, MSG_BUFFER_SIZE, "%f", voltage);
+  if (client.publish(voltageTopic, volt_msg)) {
     Serial.println("SUCCESS");
   } else {
     Serial.println("FAILURE");
   }
 
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f_hum = dht.readHumidity();
-  Serial.print("Humidity: ");
-  snprintf(hum_msg, MSG_BUFFER_SIZE, "%f", f_hum);
-  Serial.println(hum_msg);
-
-  if (client.publish(humTopic, hum_msg)) {
+  snprintf(temp_msg, MSG_BUFFER_SIZE, "%i", analogRead(analogInPin));
+  if (client.publish(voltageTopic, temp_msg)) {
     Serial.println("SUCCESS");
   } else {
     Serial.println("FAILURE");
   }
+
+
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+  // float f_temp = dht.readTemperature(true);
+  // Serial.print("Temperature: ");
+  // snprintf(temp_msg, MSG_BUFFER_SIZE, "%f", f_temp);
+  // Serial.println(temp_msg);
+
+  // if (client.publish(tempTopic, temp_msg)) {
+  //   Serial.println("SUCCESS");
+  // } else {
+  //   Serial.println("FAILURE");
+  // }
+
+  // // Read temperature as Fahrenheit (isFahrenheit = true)
+  // float f_hum = dht.readHumidity();
+  // Serial.print("Humidity: ");
+  // snprintf(hum_msg, MSG_BUFFER_SIZE, "%f", f_hum);
+  // Serial.println(hum_msg);
+
+  // if (client.publish(humTopic, hum_msg)) {
+  //   Serial.println("SUCCESS");
+  // } else {
+  //   Serial.println("FAILURE");
+  // }
 
   Serial.println("Going to sleep now...");
   delay(1000);
-  ESP.deepSleep(30e6);
+  //ESP.deepSleep(5e6);
 }
