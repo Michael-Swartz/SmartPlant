@@ -15,7 +15,7 @@ const char* voltageTopic = "/office/voltage";
 const int mqtt_port = 1883;
 const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
-const float max_voltage = 4.01; // Calibrated number
+const float max_voltage = 4.01; // R1 150 R2 560
 const float max_adc_value = 1023.00;
 
 const int analogInPin = A0;
