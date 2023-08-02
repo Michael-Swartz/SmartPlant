@@ -91,14 +91,6 @@ void loop() {
     Serial.println("FAILURE");
   }
 
-  snprintf(temp_msg, MSG_BUFFER_SIZE, "%i", analogRead(analogInPin));
-  if (client.publish(voltageTopic, temp_msg)) {
-    Serial.println("SUCCESS");
-  } else {
-    Serial.println("FAILURE");
-  }
-
-
   // Read temperature as Fahrenheit (isFahrenheit = true)
   // float f_temp = dht.readTemperature(true);
   // Serial.print("Temperature: ");
