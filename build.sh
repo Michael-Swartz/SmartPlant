@@ -8,4 +8,4 @@
 pio lib install
 
 # Build and install
-pio run -e esp12e -t upload
+pio run -e esp32doit-devkit-v1 -t upload

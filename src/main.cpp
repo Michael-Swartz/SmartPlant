@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <secrets.h>
 #include <PubSubClient.h>
 #include <DHT.h>
@@ -50,17 +50,23 @@ void reconnect() {
   }
 }
 
+void initWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, pass);
+  Serial.print("Connecting to WiFi ..");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print('.');
+    delay(1000);
+  }
+  Serial.println(WiFi.localIP());
+}
 
 void setup() {
 
   Serial.begin(9600);
   Serial.println("Starting up...");
-  WiFi.begin(ssid,pass);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+  initWiFi;
 
   Serial.println();
 
@@ -76,20 +82,20 @@ void setup() {
 
 void loop() {
 
-  if (!client.connected()){
-    reconnect();
-  }
+  // if (!client.connected()){
+  //   reconnect();
+  // }
 
-  voltage = ((float(analogRead(analogInPin)) / max_adc_value) * max_voltage);
-  Serial.print("Voltage: ");
-  Serial.println(voltage);
-  Serial.println(analogRead(analogInPin));
-  snprintf(volt_msg, MSG_BUFFER_SIZE, "%f", voltage);
-  if (client.publish(voltageTopic, volt_msg)) {
-    Serial.println("SUCCESS");
-  } else {
-    Serial.println("FAILURE");
-  }
+  // voltage = ((float(analogRead(analogInPin)) / max_adc_value) * max_voltage);
+  // Serial.print("Voltage: ");
+  // Serial.println(voltage);
+  // Serial.println(analogRead(analogInPin));
+  // snprintf(volt_msg, MSG_BUFFER_SIZE, "%f", voltage);
+  // if (client.publish(voltageTopic, volt_msg)) {
+  //   Serial.println("SUCCESS");
+  // } else {
+  //   Serial.println("FAILURE");
+  // }
 
   // Read temperature as Fahrenheit (isFahrenheit = true)
   // float f_temp = dht.readTemperature(true);
@@ -116,6 +122,6 @@ void loop() {
   // }
 
   Serial.println("Going to sleep now...");
-  delay(1000);
-  //ESP.deepSleep(5e6);
+  delay(100000);
+  //ESP.deepSleep(60e6);
 }
