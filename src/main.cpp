@@ -13,16 +13,23 @@ const char* humTopic = "/office/humidity";
 const char* tempTopic = "/office/temperature";
 const char* voltageTopic = "/office/voltage";
 const int mqtt_port = 1883;
+
 const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
-const float max_voltage = 4.01; // R1 150 R2 560
-const float max_adc_value = 4095.00;
 
-const int analogInPin = 32;
+const float max_voltage = 4.2; // R1 150 R2 560
+const float max_adc_value = 4095.00; // Max voltage of 2.8609 out of the volt divider circuit
+
+#define SLEEP_SECONDS 60
+#define uS_TO_S_CONST 1000000
+
+const int analogInPin = 33;
 float voltage = 0;
 
-#define DHTPIN 19
+#define DHTPIN 21
 #define DHTTYPE DHT22
+
+#define testpin 19
 
 #define MSG_BUFFER_SIZE	(50)
 char temp_msg[MSG_BUFFER_SIZE];
@@ -76,7 +83,10 @@ void setup() {
   client.setServer(mqtt_broker, mqtt_port);
 
   pinMode(DHTPIN, INPUT);
+  pinMode(testpin, OUTPUT);
   dht.begin();
+  digitalWrite(testpin, LOW);
+  esp_sleep_enable_timer_wakeup(SLEEP_SECONDS * uS_TO_S_CONST);
 
 }
 
@@ -85,7 +95,8 @@ void loop() {
   if (!client.connected()){
     reconnect();
   }
-
+  digitalWrite(testpin, HIGH);
+  delay(500);
   voltage = ((float(analogRead(analogInPin)) / max_adc_value) * max_voltage);
   Serial.print("Voltage: ");
   Serial.println(voltage);
@@ -96,7 +107,7 @@ void loop() {
   } else {
     Serial.println("FAILURE");
   }
-
+  digitalWrite(testpin, LOW);
   //Read temperature as Fahrenheit (isFahrenheit = true)
   float f_temp = dht.readTemperature(true);
   Serial.print("Temperature: ");
@@ -121,7 +132,8 @@ void loop() {
     Serial.println("FAILURE");
   }
 
-  //Serial.println("Going to sleep now...");
-  delay(1000);
-  //ESP.deepSleep(60e6);
+  Serial.flush();
+  delay(500);
+  esp_deep_sleep_start();
+
 }
